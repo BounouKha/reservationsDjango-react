@@ -1,0 +1,134 @@
+/* App Container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f8f9fa; /* Gris clair */
+  color: #343a40; /* Gris foncé */
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Header */
+.app-header {
+  background: #ffffff; /* Blanc */
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #dee2e6;
+}
+
+.app-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #495057; /* Gris moyen */
+}
+
+/* Navigation */
+.app-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-link {
+  color: #495057; /* Gris moyen */
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #007bff; /* Bleu clair */
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+}
+
+.logout-btn {
+  background-color: #dc3545; /* Rouge Bootstrap */
+  border: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #c82333; /* Rouge plus foncé */
+}
+
+/* Cart Badge */
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #dc3545; /* Rouge Bootstrap */
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 0.3rem 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Main Content */
+.app-main {
+  flex: 1;
+  padding: 2rem;
+  background: #ffffff; /* Blanc */
+  color: #343a40; /* Gris foncé */
+  border-radius: 10px;
+  margin: 2rem auto;
+  max-width: 1200px;
+  height: 600px; /* Hauteur fixe pour toutes les pages */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Activer le défilement si le contenu dépasse */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Aligner le contenu en haut */
+  align-items: center; /* Centrer horizontalement */
+}
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  padding: 1rem;
+  background: #ffffff; /* Blanc */
+  color: #6c757d; /* Gris clair */
+  font-size: 0.9rem;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+th {
+  background-color: #f8f9fa; /* Gris clair */
+  font-weight: bold;
+}
+
+tbody tr:hover {
+  background-color: #f1f1f1; /* Gris clair au survol */
+}

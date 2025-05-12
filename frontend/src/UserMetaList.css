@@ -1,0 +1,41 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4; /* Couleur de fond douce */
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.user-meta-container {
+  max-width: 600px; /* Largeur maximale de la liste */
+  margin: 40px auto; /* Centrer horizontalement et ajouter un espacement vertical */
+  background-color: #fff; /* Fond blanc pour la liste */
+  border-radius: 10px; /* Coins arrondis */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+  padding: 20px; /* Espacement interne */
+}
+
+ul {
+  list-style-type: none; /* Supprimer les puces */
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  padding: 15px 20px; /* Espacement interne pour chaque élément */
+  border-bottom: 1px solid #ddd; /* Ligne de séparation entre les éléments */
+}
+
+li:last-child {
+  border-bottom: none; /* Supprimer la ligne pour le dernier élément */
+}
+
+li:hover {
+  background-color: #f9f9f9; /* Changement de couleur au survol */
+  cursor: pointer;
+}
