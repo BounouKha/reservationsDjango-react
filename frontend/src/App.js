@@ -50,9 +50,9 @@ function App() {
         }
     };
 
-    useEffect(() => {
-        fetchUserAndCartStatus();
-    }, []);
+        useEffect(() => {
+    fetchUserAndCartStatus();
+    }, [fetchUserAndCartStatus]);
 
     const handleLogout = () => {
         setUser(null);
