@@ -21,7 +21,7 @@ const Profile = () => {
       }
 
       try {
-        const userResponse = await fetch(`http://127.0.0.1:8000/catalogue/api/user-meta/${userId}/`, {
+        const userResponse = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/user-meta/${userId}/`, {
           method: 'GET',
           headers: {
             Authorization: `Token ${token}`,
@@ -37,7 +37,7 @@ const Profile = () => {
           return;
         }
 
-        const reservationsResponse = await fetch(`http://127.0.0.1:8000/accounts/api/user-reservations/${userId}/`, {
+        const reservationsResponse = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-reservations/${userId}/`, {
           method: 'GET',
           headers: {
             Authorization: `Token ${token}`,

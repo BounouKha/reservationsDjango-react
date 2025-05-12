@@ -23,7 +23,7 @@ const Cart = () => {
           return;
         }
 
-        const response = await fetch(`http://127.0.0.1:8000/accounts/api/user-cart/${userId}/`, {
+        const response = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-cart/${userId}/`, {
           method: 'GET',
           headers: {
             Authorization: `Token ${token}`,
@@ -54,7 +54,7 @@ const Cart = () => {
       const token = localStorage.getItem('token');
       const userId = JSON.parse(localStorage.getItem('user'))?.id;
 
-      const response = await fetch(`http://127.0.0.1:8000/accounts/api/user-cart/delete/${userId}/`, {
+      const response = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-cart/delete/${userId}/`, {
         method: 'DELETE',
         headers: {
           Authorization: `Token ${token}`,
@@ -81,7 +81,7 @@ const Cart = () => {
       console.log('Mise à jour de la quantité pour cart_item_id :', cartItemId, 'Nouvelle quantité :', newQuantity); // Ajout du console.log
 
 
-      const response = await fetch(`http://127.0.0.1:8000/accounts/api/user-cart/update/`, {
+      const response = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-cart/update/`, {
         method: 'PATCH',
         headers: {
           Authorization: `Token ${token}`,
@@ -106,7 +106,7 @@ const Cart = () => {
   const handleCheckout = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://127.0.0.1:8000/catalogue/api/create-stripe-session/', {
+      const response = await fetch('https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/create-stripe-session/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

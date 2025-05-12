@@ -12,7 +12,7 @@ const ArtistList = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const fetchAllArtists = () => {
-    fetch('http://127.0.0.1:8000/catalogue/api/artists/?all=true')
+    fetch('https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/artists/?all=true')
       .then((response) => response.json())
       .then((data) => {
         setAllArtists(data);
@@ -23,7 +23,7 @@ const ArtistList = () => {
 
   const fetchArtists = (page = 1) => {
     setLoading(true);
-    fetch(`http://127.0.0.1:8000/catalogue/api/artists/?page=${page}`)
+    fetch(`https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/artists/?page=${page}`)
       .then((response) => response.json())
       .then((data) => {
         setFilteredArtists(data.results);

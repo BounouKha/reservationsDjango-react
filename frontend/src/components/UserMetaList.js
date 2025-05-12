@@ -6,7 +6,7 @@ const UserMetaList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/catalogue/api/user-meta/')
+    fetch('https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/user-meta/')
       .then((response) => {
         console.log('Response:', response);
         return response.json();

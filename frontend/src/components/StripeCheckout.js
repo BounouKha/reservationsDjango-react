@@ -9,7 +9,7 @@ const StripeCheckout = ({ cartTotal }) => {
     const token = localStorage.getItem('token');
     const handleCheckout = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/catalogue/api/create-stripe-session/', {
+            const response = await fetch('https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/create-stripe-session/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

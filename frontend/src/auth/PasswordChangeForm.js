@@ -58,7 +58,7 @@ const PasswordChangeForm = () => {
       ?.split('=')[1];
 
     try { 
-      const response = await fetch('http://127.0.0.1:8000/accounts/api/change-password/', {
+      const response = await fetch('https://reservationsdjango-groupe-production.up.railway.app/accounts/api/change-password/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

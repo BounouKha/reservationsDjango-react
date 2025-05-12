@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8000/catalogue'; // Remplacez par l'URL de votre API
+const BASE_URL = 'https://reservationsdjango-groupe-production.up.railway.app'; // Remplacez par l'URL de votre API
 
 export const isUserLoggedIn = async () => {
   try {

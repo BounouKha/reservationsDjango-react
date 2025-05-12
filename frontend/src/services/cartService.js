@@ -1,7 +1,7 @@
 
 
 
-const BASE_URL = "http://127.0.0.1:8000/catalogue/api"; //
+const BASE_URL = "https://reservationsdjango-groupe-production.up.railway.app/catalogue/api"; //
 
 
 // Fonction pour formater la date et l'heure
@@ -20,7 +20,7 @@ export const getCart = async (userId) => {
   }
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/accounts/api/user-cart/${userId}/`, {
+    const response = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-cart/${userId}/`, {
       method: 'GET',
       headers: {
         Authorization: `Token ${token}`,
@@ -53,7 +53,7 @@ export const addToCart = async (representationId, quantities) => {
     console.log('Tentative d\'ajout au panier :');
     console.log('ID de la représentation :', representationId);
     console.log('Quantités :', quantities);
-    const response = await fetch(`http://127.0.0.1:8000/accounts/api/user-cart/${user.id}/`, {
+    const response = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-cart/${user.id}/`, {
       method: 'POST',
       headers: {
         Authorization: `Token ${token}`,
@@ -121,7 +121,7 @@ export const updateCartItem = async (userId, cartItemId, quantity) => {
   }
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/accounts/api/user-cart/${userId}/`, {
+    const response = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-cart/${userId}/`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -152,7 +152,7 @@ export const removeFromCart = async (userId, cartItemId) => {
   }
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/accounts/api/user-cart/${userId}/`, {
+    const response = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-cart/${userId}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

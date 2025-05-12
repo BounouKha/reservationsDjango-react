@@ -39,7 +39,7 @@ const RepresentationsList = () => {
   };
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/catalogue/api/representations/')
+    fetch('https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/representations/')
       .then((response) => response.json())
       .then((data) => {
         setRepresentations(data);

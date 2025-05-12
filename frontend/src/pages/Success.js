@@ -5,7 +5,7 @@ const fetchRepresentationIdByTitle = async (title, schedule, location) => {
         console.log('Titre recherché :', title);
 
         // Requête pour récupérer toutes les représentations associées au titre
-        const response = await fetch(`http://127.0.0.1:8000/catalogue/api/representations/?title=${encodeURIComponent(title)}`);
+        const response = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/representations/?title=${encodeURIComponent(title)}`);
         if (!response.ok) {
             console.error('Erreur lors de la récupération de l\'ID de la représentation.');
             return null;
@@ -37,7 +37,7 @@ const fetchRepresentationIdByTitle = async (title, schedule, location) => {
 
 const fetchPrices = async () => {
     try {
-        const response = await fetch('http://127.0.0.1:8000/accounts/api/prices/');
+        const response = await fetch('https://reservationsdjango-groupe-production.up.railway.app/accounts/api/prices/');
         if (!response.ok) {
             console.error('Erreur lors de la récupération des prix.');
             return null;
@@ -91,7 +91,7 @@ const Success = () => {
 
                 // Étape 1 : Récupérer les données du panier
                 console.log('Récupération des données du panier...');
-                const cartResponse = await fetch(`http://127.0.0.1:8000/accounts/api/user-cart/${userId}/`, {
+                const cartResponse = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-cart/${userId}/`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -152,7 +152,7 @@ const Success = () => {
                 }
 
                 // Étape 3 : Vider le panier
-                const clearCartResponse = await fetch('http://127.0.0.1:8000/accounts/api/clear-cart/', {
+                const clearCartResponse = await fetch('https://reservationsdjango-groupe-production.up.railway.app/accounts/api/clear-cart/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ const Success = () => {
                 // Étape 4 : Envoyer les données du paiement
                 const paymentData = { quantities: validQuantities };
 
-                const paymentResponse = await fetch('http://127.0.0.1:8000/accounts/api/payment-success/', {
+                const paymentResponse = await fetch('https://reservationsdjango-groupe-production.up.railway.app/accounts/api/payment-success/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
