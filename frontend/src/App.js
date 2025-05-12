@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import UserMetaList from './components/UserMetaList';
 import ArtistList from './components/ArtistList';
@@ -21,7 +21,7 @@ function App() {
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
-    const fetchUserAndCartStatus = async () => {
+    const fetchUserAndCartStatus = useCallback(async () => { // ⬅️ Wrap avec useCallback
         try {
             const token = localStorage.getItem('token');
             const userId = user?.id;
@@ -48,11 +48,12 @@ function App() {
             setHasItemsInCart(false);
             setUser(null);
         }
-    };
+    }, [user]); // ⬅️ Ajoute 'user' comme dépendance si nécessaire
 
-        useEffect(() => {
-    fetchUserAndCartStatus();
-    }, [fetchUserAndCartStatus]);
+    useEffect(() => {
+        fetchUserAndCartStatus();
+    }, [fetchUserAndCartStatus]); // 
+
 
     const handleLogout = () => {
         setUser(null);
