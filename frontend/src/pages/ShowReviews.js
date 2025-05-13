@@ -7,6 +7,10 @@ const ShowReviews = () => {
   const [selectedShow, setSelectedShow] = useState(null); // State for the selected show
   const [showModal, setShowModal] = useState(false); // State for modal visibility
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
+  const [newReview, setNewReview] = useState(''); // State for the new review text
+  const [newStars, setNewStars] = useState(0); // State for the new review stars
+
+  const isAuthenticated = !!localStorage.getItem('token'); // Check if the user is authenticated
 
   useEffect(() => {
     fetch('https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/shows/reviews/')
@@ -27,6 +31,50 @@ const ShowReviews = () => {
     setShowModal(false);
     setSelectedShow(null);
   };
+
+   const handleAddReview = () => {
+  if (!newReview || newStars <= 0) {
+    alert('Veuillez remplir tous les champs avant de soumettre votre avis.');
+    return;
+  }
+
+  if (newStars < 1 || newStars > 5) {
+    alert('Le nombre d\'étoiles doit être compris entre 1 et 5.');
+    return;
+  }
+
+  setLoading(true); // Add a loading state
+
+  fetch(`https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/shows/${selectedShow.show.id}/reviews/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Token ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify({
+      review: newReview,
+      stars: newStars,
+    }),
+  })
+    .then((response) => {
+      setLoading(false); // Reset loading state
+      return response.json().then((data) => {
+        if (response.ok) {
+          alert('Votre avis a été ajouté avec succès !');
+          setNewReview('');
+          setNewStars(0);
+          handleCloseModal();
+        } else {
+          alert('Une erreur est survenue lors de l\'ajout de votre avis.');
+        }
+      });
+    })
+    .catch((error) => {
+      setLoading(false); // Reset loading state
+      console.error('Error adding review:', error);
+    });
+};
+
 
   const filteredShows = shows.filter((show) =>
     show.show.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -100,6 +148,29 @@ const ShowReviews = () => {
                   </li>
                 ))}
               </ul>
+            )}
+             {isAuthenticated && (
+              <>
+                <h5 className="mt-4">Ajouter un avis :</h5>
+                <textarea
+                  className="form-control mb-2"
+                  placeholder="Écrivez votre avis ici..."
+                  value={newReview}
+                  onChange={(e) => setNewReview(e.target.value)}
+                ></textarea>
+                <input
+                  type="number"
+                  className="form-control mb-2"
+                  placeholder="Nombre d'étoiles (1-5)"
+                  value={newStars}
+                  onChange={(e) => setNewStars(Number(e.target.value))}
+                  min="1"
+                  max="5"
+                />
+                <button className="btn btn-primary" onClick={handleAddReview}>
+                  Soumettre
+                </button>
+              </>
             )}
           </div>
         </div>
