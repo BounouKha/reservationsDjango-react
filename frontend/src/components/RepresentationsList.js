@@ -19,8 +19,11 @@ const RepresentationsList = () => {
   const [representations, setRepresentations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showPast, setShowPast] = useState(false); // État pour le filtre "Passés"
+  const [searchQuery, setSearchQuery] = useState(''); // État pour la barre de recherche
   const [selectedRepresentation, setSelectedRepresentation] = useState(null); // Spectacle sélectionné pour le modal
   const [quantities, setQuantities] = useState({}); // État pour les quantités par catégorie
+  const [sortOrder, setSortOrder] = useState('asc'); // State for sorting order
+  const [filterLocation, setFilterLocation] = useState(''); // State for location filter
 
   // Fonction pour gérer l'incrémentation
   const incrementQuantity = (categoryId) => {
@@ -48,7 +51,7 @@ const RepresentationsList = () => {
       .catch((error) => console.error('Error fetching representations:', error));
   }, []);
 
-  const today = new Date(); // Date actuelle
+    const today = new Date(); // Date actuelle
 
   const handleAddToCart = async (representationId) => {
     const token = localStorage.getItem('token');
@@ -103,22 +106,76 @@ const RepresentationsList = () => {
     );
   }
 
-  // Filtrer les représentations
-  const filteredRepresentations = representations.filter((representation) => {
-    const eventDate = new Date(representation.schedule); // Convertir la date en objet Date
+  const uniqueLocations = [...new Set(representations.map((representation) => representation.location))]; // Extract unique locations
 
-    // Afficher les événements passés si "Afficher les passés" est coché
-    if (showPast) {
-      return eventDate < today; // Afficher uniquement les événements passés
-    }
+  // Filtrer et trier les représentations
+  const filteredAndSortedRepresentations = representations
+    .filter((representation) => {
+      const eventDate = new Date(representation.schedule); // Convertir la date en objet Date
+      const matchesSearch =
+        representation.show.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        representation.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        representation.locality.toLowerCase().includes(searchQuery.toLowerCase());
 
-    // Sinon, afficher uniquement les événements à venir
-    return eventDate >= today;
-  });
+      const matchesLocation =
+        !filterLocation || representation.location.toLowerCase().includes(filterLocation.toLowerCase());
+
+      // Afficher les événements passés si "Afficher les passés" est coché
+      if (showPast) {
+        return eventDate < today && matchesSearch && matchesLocation; // Afficher uniquement les événements passés correspondant à la recherche
+      }
+
+      // Sinon, afficher uniquement les événements à venir correspondant à la recherche
+      return eventDate >= today && matchesSearch && matchesLocation;
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.schedule);
+      const dateB = new Date(b.schedule);
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
 
   return (
     <div className="container mt-4">
       <h1 className="text-center mb-4">Liste de Spectacle</h1>
+
+      {/* Barre de recherche */}
+      <div className="mb-4">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Rechercher par titre, localisation ou localité"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)} // Mettre à jour la recherche
+        />
+      </div>
+
+      {/* Filtres et tri */}
+      <div className="row mb-4">
+        <div className="col-md-6">
+          <select
+            className="form-select"
+            value={filterLocation}
+            onChange={(e) => setFilterLocation(e.target.value)}
+          >
+            <option value="">Toutes les localisations</option>
+            {uniqueLocations.map((location, index) => (
+              <option key={index} value={location}>
+                {location}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="col-md-6">
+          <select
+            className="form-select"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+          >
+            <option value="asc">Trier par date (croissant)</option>
+            <option value="desc">Trier par date (décroissant)</option>
+          </select>
+        </div>
+      </div>
 
       {/* Checkbox pour le filtre "Passés" */}
       <div className="form-check mb-4">
@@ -135,7 +192,7 @@ const RepresentationsList = () => {
       </div>
 
       <ul className="list-group">
-        {filteredRepresentations.map((representation) => {
+        {filteredAndSortedRepresentations.map((representation) => {
           const eventDate = new Date(representation.schedule); // Convertir la date en objet Date
           const isExpired = eventDate < today; // Vérifier si l'événement est expiré
           const isBookable = representation.show.bookable; // Vérifier si l'événement est réservable
