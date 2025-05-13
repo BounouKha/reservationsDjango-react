@@ -84,6 +84,9 @@ function App() {
                             <li>
                                 <Link to="/representations" className="nav-link">Nos Spectacles</Link>
                             </li>
+                            <li>
+                                <Link to="/shows/reviews" className="nav-link">Avis</Link>
+                            </li>
                         </ul>
                         <div className="nav-actions">
                             {user ? (
@@ -122,7 +125,9 @@ function App() {
                         <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
                         <Route path="/login" element={user ? <Navigate to="/profile" /> : <Login onLoginSuccess={setUser} />} />
                         <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
-                         <Route path="/artists/:id" element={<ArtistDetail />} />
+                        <Route path="/artists/:id" element={<ArtistDetail />} />
+                        <Route path="/shows/reviews" element={<ShowReviews />} />
+                        <Route path="/shows/:showId/reviews" element={<ShowReviews />} />
 
                          {/* Autres routes */}
                         <Route path="/success" element={<Success />} />
