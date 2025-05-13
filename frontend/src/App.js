@@ -14,6 +14,7 @@ import './App.css'; // Importer les styles personnalisés
 import Success from './pages/Success';
 import Cancel from './pages/Cancel';
 import ArtistDetail from './components/ArtistDetail';
+import Home from './pages/Home';
 
 
 function App() {
@@ -72,6 +73,9 @@ function App() {
                     <nav className="app-nav">
                         <ul className="nav-links">
                             <li>
+                                <Link to="/" className="nav-link">Home</Link>
+                            </li>
+                            <li>
                                 <Link to="/user-meta" className="nav-link">User Meta</Link>
                             </li>
                             <li>
@@ -110,6 +114,7 @@ function App() {
                 </header>
                 <main className="app-main">
                     <Routes>
+                        <Route path="/" element={<Home />} />
                         <Route path="/user-meta" element={<UserMetaList />} />
                         <Route path="/artists" element={<ArtistList />} />
                         <Route path="/representations" element={<RepresentationsList />} />
@@ -118,7 +123,7 @@ function App() {
                         <Route path="/login" element={user ? <Navigate to="/profile" /> : <Login onLoginSuccess={setUser} />} />
                         <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
                          <Route path="/artists/:id" element={<ArtistDetail />} />
-                         
+
                          {/* Autres routes */}
                         <Route path="/success" element={<Success />} />
                         <Route path="/cancel" element={<Cancel />} />
