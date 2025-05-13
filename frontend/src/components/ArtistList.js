@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../ArtistList.css';
 import { FaSearch, FaUser } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const ArtistList = () => {
   const [allArtists, setAllArtists] = useState([]);
@@ -10,6 +11,7 @@ const ArtistList = () => {
   const [nextPage, setNextPage] = useState(null);
   const [previousPage, setPreviousPage] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   const fetchAllArtists = () => {
     fetch('https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/artists/?all=true')
@@ -70,10 +72,15 @@ const ArtistList = () => {
       </div>
       <div className="artist-cards">
         {filteredArtists.map((artist) => (
-          <div key={artist.id} className="card artist-card">
+          <div
+            key={artist.id}
+            className="card artist-card"
+            onClick={() => navigate(`/artists/${artist.id}`)}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="card-body">
               <h5 className="card-title">{artist.firstname} {artist.lastname}</h5>
-              <p className="card-text">More details about the artist can go here.</p>
+              <p className="card-text">Plus d'info</p>
             </div>
           </div>
         ))}
