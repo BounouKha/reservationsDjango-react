@@ -15,7 +15,7 @@ import Success from './pages/Success';
 import Cancel from './pages/Cancel';
 import ArtistDetail from './components/ArtistDetail';
 import Home from './pages/Home';
-
+import ShowReviews from './pages/ShowReviews';
 
 function App() {
     const [hasItemsInCart, setHasItemsInCart] = useState(false);
