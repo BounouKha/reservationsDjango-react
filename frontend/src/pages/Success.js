@@ -55,143 +55,134 @@ const Success = () => {
     const [isProcessing, setIsProcessing] = useState(false); // État pour éviter les requêtes multiples
 
     useEffect(() => {
+        let isMounted = true; // To prevent state updates on unmounted components
+
         const clearCartAndProcessPayment = async () => {
-            if (isProcessing) {
-                console.log('Une requête est déjà en cours. Annulation de l\'appel.');
-                return;
-            }
+            if (isMounted && !isProcessing) {
+                setIsProcessing(true); // Mark as processing
 
-            setIsProcessing(true); // Marquer comme en cours de traitement
+                try {
+                    const token = localStorage.getItem('token');
+                    const userId = JSON.parse(localStorage.getItem('user'))?.id;
 
-            try {
-                const token = localStorage.getItem('token');
-                const userId = JSON.parse(localStorage.getItem('user'))?.id;
+                    if (!token || !userId) {
+                        console.error('Utilisateur non connecté.');
+                        return;
+                    }
 
-                if (!token || !userId) {
-                    console.error('Utilisateur non connecté.');
-                    setIsProcessing(false); // Réinitialiser l'état
-                    return;
+                    // Étape 0 : Récupérer les prix depuis l'API
+                    const prices = await fetchPrices();
+                    if (!prices) {
+                        console.error('Impossible de récupérer les prix.');
+                        return;
+                    }
+
+                    // Créer un mapping dynamique entre les types de prix et leurs IDs
+                    const priceTypeToId = prices.reduce((acc, price) => {
+                        acc[price.type] = price.id;
+                        return acc;
+                    }, {});
+
+                    // Étape 1 : Récupérer les données du panier
+                    const cartResponse = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-cart/${userId}/`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Token ${token}`,
+                        },
+                    });
+
+                    if (!cartResponse.ok) {
+                        console.error('Erreur lors de la récupération du panier.');
+                        return;
+                    }
+
+                    const cartData = await cartResponse.json();
+
+                    if (!cartData.items || cartData.items.length === 0) {
+                        console.error('Le panier est vide ou les données sont invalides.');
+                        return;
+                    }
+
+                    // Étape 2 : Récupérer les IDs des spectacles et des prix
+                    const quantities = await Promise.all(
+                        cartData.items.map(async (item) => {
+                            const representationId = await fetchRepresentationIdByTitle(
+                                item.title,
+                                item.schedule,
+                                item.location
+                            );
+
+                            if (!representationId) {
+                                console.error(`Impossible de trouver l'ID de la représentation pour le titre : ${item.title}`);
+                                return null;
+                            }
+
+                            const priceId = priceTypeToId[item.price?.type];
+                            if (!priceId) {
+                                console.error(`Type de prix invalide : ${item.price?.type}`);
+                                return null;
+                            }
+
+                            return {
+                                representation_id: representationId,
+                                price_id: priceId,
+                                quantity: item.quantity,
+                            };
+                        })
+                    );
+
+                    const validQuantities = quantities.filter((q) => q !== null);
+
+                    if (validQuantities.length === 0) {
+                        console.error('Aucune donnée valide pour le paiement.');
+                        return;
+                    }
+
+                    // Étape 3 : Vider le panier
+                    const clearCartResponse = await fetch('https://reservationsdjango-groupe-production.up.railway.app/accounts/api/clear-cart/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Token ${token}`,
+                        },
+                    });
+
+                    if (!clearCartResponse.ok) {
+                        console.error('Erreur lors de la suppression du panier.');
+                    }
+
+                    // Étape 4 : Envoyer les données du paiement
+                    const paymentData = { quantities: validQuantities };
+
+                    const paymentResponse = await fetch('https://reservationsdjango-groupe-production.up.railway.app/accounts/api/payment-success/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Token ${token}`,
+                        },
+                        body: JSON.stringify(paymentData),
+                    });
+
+                    if (!paymentResponse.ok) {
+                        console.error('Erreur lors du traitement du paiement.');
+                    }
+                } catch (error) {
+                    console.error('Erreur réseau :', error);
+                } finally {
+                    if (isMounted) {
+                        setIsProcessing(false); // Reset processing state
+                    }
                 }
-
-                // Étape 0 : Récupérer les prix depuis l'API
-                const prices = await fetchPrices();
-                if (!prices) {
-                    console.error('Impossible de récupérer les prix.');
-                    setIsProcessing(false); // Réinitialiser l'état
-                    return;
-                }
-
-                // Créer un mapping dynamique entre les types de prix et leurs IDs
-                const priceTypeToId = prices.reduce((acc, price) => {
-                    acc[price.type] = price.id;
-                    return acc;
-                }, {});
-                console.log('Mapping des types de prix vers leurs IDs :', priceTypeToId);
-
-                // Étape 1 : Récupérer les données du panier
-                console.log('Récupération des données du panier...');
-                const cartResponse = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-cart/${userId}/`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Token ${token}`,
-                    },
-                });
-
-                if (!cartResponse.ok) {
-                    console.error('Erreur lors de la récupération du panier.');
-                    setIsProcessing(false); // Réinitialiser l'état
-                    return;
-                }
-
-                const cartData = await cartResponse.json();
-                console.log('Données du panier récupérées :', cartData);
-
-                if (!cartData.items || cartData.items.length === 0) {
-                    console.error('Le panier est vide ou les données sont invalides.');
-                    setIsProcessing(false); // Réinitialiser l'état
-                    return;
-                }
-
-                // Étape 2 : Récupérer les IDs des spectacles et des prix
-                const quantities = await Promise.all(
-                    cartData.items.map(async (item) => {
-                        const representationId = await fetchRepresentationIdByTitle(
-                            item.title, // Titre du spectacle
-                            item.schedule, // Date et heure de la représentation
-                            item.location // Localisation de la représentation
-                        );
-
-                        if (!representationId) {
-                            console.error(`Impossible de trouver l'ID de la représentation pour le titre : ${item.title}`);
-                            return null;
-                        }
-
-                        const priceId = priceTypeToId[item.price?.type];
-                        if (!priceId) {
-                            console.error(`Type de prix invalide : ${item.price?.type}`);
-                            return null;
-                        }
-
-                        return {
-                            representation_id: representationId,
-                            price_id: priceId,
-                            quantity: item.quantity,
-                        };
-                    })
-                );
-                // Filtrer les données invalides
-                const validQuantities = quantities.filter((q) => q !== null);
-                console.log('Données de paiement générées :', validQuantities);
-
-                if (validQuantities.length === 0) {
-                    console.error('Aucune donnée valide pour le paiement.');
-                    setIsProcessing(false); // Réinitialiser l'état
-                    return;
-                }
-
-                // Étape 3 : Vider le panier
-                const clearCartResponse = await fetch('https://reservationsdjango-groupe-production.up.railway.app/accounts/api/clear-cart/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Token ${token}`,
-                    },
-                });
-
-                if (clearCartResponse.ok) {
-                    console.log('Panier vidé avec succès.');
-                } else {
-                    console.error('Erreur lors de la suppression du panier.');
-                }
-
-                // Étape 4 : Envoyer les données du paiement
-                const paymentData = { quantities: validQuantities };
-
-                const paymentResponse = await fetch('https://reservationsdjango-groupe-production.up.railway.app/accounts/api/payment-success/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Token ${token}`,
-                    },
-                    body: JSON.stringify(paymentData),
-                });
-
-                if (paymentResponse.ok) {
-                    const data = await paymentResponse.json();
-                    console.log('Paiement traité avec succès :', data);
-                } else {
-                    console.error('Erreur lors du traitement du paiement.');
-                }
-            } catch (error) {
-                console.error('Erreur réseau :', error);
-            } finally {
-                setIsProcessing(false); // Réinitialiser l'état après traitement
             }
         };
 
         clearCartAndProcessPayment();
-    }, []); // Utiliser un tableau de dépendances vide pour exécuter une seule fois
+
+        return () => {
+            isMounted = false; // Cleanup function to prevent state updates
+        };
+    }, [isProcessing]); // Include isProcessing in the dependency array
 
     return (
         <div className="container mt-5">
