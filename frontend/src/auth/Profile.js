@@ -97,7 +97,7 @@ const Profile = () => {
     setIsUpdating(true);
 
     const token = localStorage.getItem('token');
-    const userId = JSON.parse(localStorage.getItem('user'))?.id;
+    // Removed userId declaration here since it is not used in this function
 
     try {
       const response = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-detail/`, {
