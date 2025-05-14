@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import UserMetaList from './components/UserMetaList';
 import ArtistList from './components/ArtistList';
@@ -24,7 +24,7 @@ function App() {
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
-    const fetchUserAndCartStatus = useCallback(async () => { // ⬅️ Wrap avec useCallback
+    const fetchUserAndCartStatus = async () => {
         try {
             const token = localStorage.getItem('token');
             const userId = user?.id;
@@ -51,12 +51,11 @@ function App() {
             setHasItemsInCart(false);
             setUser(null);
         }
-    }, [user]); // ⬅️ Ajoute 'user' comme dépendance si nécessaire
+    };
 
     useEffect(() => {
         fetchUserAndCartStatus();
-    }, [fetchUserAndCartStatus]); // 
-
+    }, []);
 
     const handleLogout = () => {
         setUser(null);
@@ -67,24 +66,26 @@ function App() {
 
     return (
         <Router>
-            <div className="app-container">
-                <header className="app-header">
-                    <h1 className="app-title">🎭 Réservations Spectacles</h1>
-                    <nav className="app-nav">
-                        <ul className="nav-links">
-                            <li>
+            <div className="container-fluid">
+                <header className="row app-header">
+                    <div className="col-12">
+                        <h1 className="app-title text-center">🎭 Réservations Spectacles</h1>
+                    </div>
+                    <nav className="col-12 app-nav">
+                        <ul className="nav nav-pills justify-content-center">
+                            <li className="nav-item">
                                 <Link to="/" className="nav-link">Home</Link>
                             </li>
-                            <li>
+                            <li className="nav-item">
                                 <Link to="/user-meta" className="nav-link">User Meta</Link>
                             </li>
-                            <li>
+                            <li className="nav-item">
                                 <Link to="/artists" className="nav-link">Nos Artistes</Link>
                             </li>
-                            <li>
+                            <li className="nav-item">
                                 <Link to="/representations" className="nav-link">Nos Spectacles</Link>
                             </li>
-                            <li>
+                            <li className="nav-item">
                                 <Link to="/shows/reviews" className="nav-link">Avis</Link>
                             </li>
                         </ul>
@@ -115,27 +116,31 @@ function App() {
                         </div>
                     </nav>
                 </header>
-                <main className="app-main">
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/user-meta" element={<UserMetaList />} />
-                        <Route path="/artists" element={<ArtistList />} />
-                        <Route path="/representations" element={<RepresentationsList />} />
-                        <Route path="/show/:id" element={<ShowDetail />} />
-                        <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
-                        <Route path="/login" element={user ? <Navigate to="/profile" /> : <Login onLoginSuccess={setUser} />} />
-                        <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
-                        <Route path="/artists/:id" element={<ArtistDetail />} />
-                        <Route path="/shows/reviews" element={<ShowReviews />} />
-                        <Route path="/shows/:showId/reviews" element={<ShowReviews />} />
-
-                         {/* Autres routes */}
-                        <Route path="/success" element={<Success />} />
-                        <Route path="/cancel" element={<Cancel />} />
-                    </Routes>
+                <main className="row app-main">
+                    <div className="col-12">
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/user-meta" element={<UserMetaList />} />
+                            <Route path="/artists" element={<ArtistList />} />
+                            <Route path="/representations" element={<RepresentationsList />} />
+                            <Route path="/show/:id" element={<ShowDetail />} />
+                            <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
+                            <Route path="/login" element={user ? <Navigate to="/profile" /> : <Login onLoginSuccess={setUser} />} />
+                            <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
+                            <Route path="/artists/:id" element={<ArtistDetail />} />
+                            <Route path="/shows/reviews" element={<ShowReviews />} />
+                            <Route path="/shows/:showId/reviews" element={<ShowReviews />} />
+                             
+                             {/* Autres routes */}
+                            <Route path="/success" element={<Success />} />
+                            <Route path="/cancel" element={<Cancel />} />
+                        </Routes>
+                    </div>
                 </main>
-                <footer className="app-footer">
-                    <p>© 2025 Réservations Spectacles. Tous droits réservés.</p>
+                <footer className="row app-footer">
+                    <div className="col-12 text-center">
+                        <p>© 2025 Réservations Spectacles. Tous droits réservés.</p>
+                    </div>
                 </footer>
             </div>
         </Router>
