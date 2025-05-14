@@ -7,6 +7,7 @@ import ShowDetail from './components/ShowDetail';
 import Cart from './components/Cart';
 import Login from './auth/Login';
 import Profile from './auth/Profile';
+import Register from './auth/Register';
 import { isUserLoggedIn } from './auth/authService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';

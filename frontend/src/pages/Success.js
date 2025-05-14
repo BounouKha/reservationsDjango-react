@@ -166,7 +166,7 @@ const Success = () => {
 
                     if (!paymentResponse.ok) {
                         console.error('Erreur lors du traitement du paiement.');
-                    }s
+                    }
                 } catch (error) {
                     console.error('Erreur réseau :', error);
                 } finally {
