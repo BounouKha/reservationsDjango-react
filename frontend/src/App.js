@@ -102,6 +102,11 @@ function App() {
                             ) : (
                                 <Link to="/login" className="btn btn-outline-dark">Connexion</Link>
                             )}
+                            {!user && (
+                                <Link to="/register" className="btn btn-outline-success me-3">
+                                    S'inscrire
+                                </Link>
+                            )}
                             <Link to={user ? "/cart" : "/login"} className="btn btn-outline-dark position-relative ms-3">
                                 <i className="bi bi-cart"></i>
                                 {hasItemsInCart && user && (
@@ -124,6 +129,7 @@ function App() {
                             <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
                             <Route path="/login" element={user ? <Navigate to="/profile" /> : <Login onLoginSuccess={setUser} />} />
                             <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
+                            <Route path="/register" element={<Register />} />
                             <Route path="/artists/:id" element={<ArtistDetail />} />
                             <Route path="/shows/reviews" element={<ShowReviews />} />
                             <Route path="/shows/:showId/reviews" element={<ShowReviews />} />
