@@ -67,7 +67,6 @@ const Success = () => {
                 const token = localStorage.getItem('token');
                 const userId = JSON.parse(localStorage.getItem('user'))?.id;
 
-                
                 if (!token || !userId) {
                     console.error('Utilisateur non connecté.');
                     setIsProcessing(false); // Réinitialiser l'état
@@ -192,7 +191,7 @@ const Success = () => {
         };
 
         clearCartAndProcessPayment();
-    }, [isProcessing]); // Ajoutez `isProcessing` comme dépendance pour éviter les appels multiples
+    }, []); // Utiliser un tableau de dépendances vide pour exécuter une seule fois
 
     return (
         <div className="container mt-5">
