@@ -3,10 +3,48 @@ import { useNavigate } from 'react-router-dom';
 import { FaUser, FaTicketAlt, FaKey } from 'react-icons/fa';
 import PasswordChangeForm from './PasswordChangeForm';
 
+const generateCSV = (reservations) => {
+  const headers = ['Spectacle', 'Quantité', 'Date de réservation', 'Statut'];
+  const rows = reservations.map((res) => [
+    res.title,
+    `${res.quantity} places`,
+    new Date(res.booking_date).toLocaleString(),
+    res.status,
+  ]);
+
+  const csvContent = [headers, ...rows]
+    .map((row) => row.map((item) => `"${item}"`).join(','))
+    .join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  return url;
+};
+
+const generateReservationCSV = (reservation) => {
+  const headers = ['Titre', 'Date', 'Quantité'];
+  const rows = [
+    [
+      reservation.title,
+      new Date(reservation.booking_date).toLocaleString(),
+      `${reservation.quantity} places`,
+    ],
+  ];
+
+  const csvContent = [headers, ...rows]
+    .map((row) => row.map((item) => `"${item}"`).join(','))
+    .join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  return url;
+};
+
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [csvUrl, setCsvUrl] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,7 +59,7 @@ const Profile = () => {
       }
 
       try {
-        const userResponse = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/user-meta/${userId}/`, {
+        const userResponse = await fetch(`http://localhost:8000/catalogue/api/user-meta/${userId}/`, {
           method: 'GET',
           headers: {
             Authorization: `Token ${token}`,
@@ -37,7 +75,7 @@ const Profile = () => {
           return;
         }
 
-        const reservationsResponse = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-reservations/${userId}/`, {
+        const reservationsResponse = await fetch(`http://localhost:8000/accounts/api/user-reservations/${userId}/`, {
           method: 'GET',
           headers: {
             Authorization: `Token ${token}`,
@@ -47,6 +85,8 @@ const Profile = () => {
         if (reservationsResponse.ok) {
           const reservationsData = await reservationsResponse.json();
           setReservations(reservationsData);
+          const url = generateCSV(reservationsData);
+          setCsvUrl(url);
         } else {
           console.error('Erreur lors de la récupération des réservations.');
         }
@@ -87,26 +127,38 @@ const Profile = () => {
 
       <h2 className="mt-4"><FaTicketAlt /> Vos Réservations</h2>
       {reservations.length > 0 ? (
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>Spectacle</th>
-              <th>Quantité</th>
-              <th>Date de réservation</th>
-              <th>Statut</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reservations.map((reservation) => (
-              <tr key={reservation.id}>
-                <td>{reservation.title}</td>
-                <td>{reservation.quantity} places</td>
-                <td>{new Date(reservation.booking_date).toLocaleString()}</td>
-                <td>{reservation.status}</td>
+        <>
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Spectacle</th>
+                <th>Quantité</th>
+                <th>Date de réservation</th>
+                <th>Statut</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {reservations.map((reservation) => (
+                <tr key={reservation.id}>
+                  <td>{reservation.title}</td>
+                  <td>{reservation.quantity} places</td>
+                  <td>{new Date(reservation.booking_date).toLocaleString()}</td>
+                  <td>{reservation.status}</td>
+                  <td>
+                    <a
+                      href={generateReservationCSV(reservation)}
+                      download={`reservation_${reservation.id}.csv`}
+                      className="btn btn-outline-primary btn-sm"
+                    >
+                      Télécharger CSV
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
       ) : (
         <p>Vous n'avez aucune réservation.</p>
       )}
