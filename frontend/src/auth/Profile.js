@@ -3,24 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { FaUser, FaTicketAlt, FaKey } from 'react-icons/fa';
 import PasswordChangeForm from './PasswordChangeForm';
 
-const generateCSV = (reservations) => {
-  const headers = ['Spectacle', 'Quantité', 'Date de réservation', 'Statut'];
-  const rows = reservations.map((res) => [
-    res.title,
-    `${res.quantity} places`,
-    new Date(res.booking_date).toLocaleString(),
-    res.status,
-  ]);
-
-  const csvContent = [headers, ...rows]
-    .map((row) => row.map((item) => `"${item}"`).join(','))
-    .join('\n');
-
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  return url;
-};
-
 const generateReservationCSV = (reservation) => {
   const headers = ['Titre', 'Date', 'Quantité'];
   const rows = [
@@ -58,7 +40,7 @@ const Profile = () => {
       }
 
       try {
-        const userResponse = await fetch(`http://localhost:8000/catalogue/api/user-meta/${userId}/`, {
+        const userResponse = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/catalogue/api/user-meta/${userId}/`, {
           method: 'GET',
           headers: {
             Authorization: `Token ${token}`,
@@ -74,7 +56,7 @@ const Profile = () => {
           return;
         }
 
-        const reservationsResponse = await fetch(`http://localhost:8000/accounts/api/user-reservations/${userId}/`, {
+        const reservationsResponse = await fetch(`https://reservationsdjango-groupe-production.up.railway.app/accounts/api/user-reservations/${userId}/`, {
           method: 'GET',
           headers: {
             Authorization: `Token ${token}`,
