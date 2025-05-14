@@ -77,9 +77,6 @@ function App() {
                                 <Link to="/" className="nav-link">Home</Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/user-meta" className="nav-link">User Meta</Link>
-                            </li>
-                            <li className="nav-item">
                                 <Link to="/artists" className="nav-link">Nos Artistes</Link>
                             </li>
                             <li className="nav-item">
