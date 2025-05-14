@@ -36,10 +36,10 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileAndReservations = async () => {
       const token = localStorage.getItem('token');
-      const userId = JSON.parse(localStorage.getItem('user'))?.id;
+      // Removed unused userId variable to resolve ESLint warning
 
-      if (!token || !userId) {
-        console.error('Aucun token ou ID utilisateur trouvé. Redirection vers la page de connexion.');
+      if (!token) {
+        console.error('Aucun token trouvé. Redirection vers la page de connexion.');
         navigate('/login');
         return;
       }
