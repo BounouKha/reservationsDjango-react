@@ -36,7 +36,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileAndReservations = async () => {
       const token = localStorage.getItem('token');
-      // Removed unused userId variable to resolve ESLint warning
+      const userId = JSON.parse(localStorage.getItem('user'))?.id; // Reintroduce userId to fix no-undef errors
 
       if (!token) {
         console.error('Aucun token trouvé. Redirection vers la page de connexion.');
