@@ -44,7 +44,6 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [csvUrl, setCsvUrl] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,8 +84,6 @@ const Profile = () => {
         if (reservationsResponse.ok) {
           const reservationsData = await reservationsResponse.json();
           setReservations(reservationsData);
-          const url = generateCSV(reservationsData);
-          setCsvUrl(url);
         } else {
           console.error('Erreur lors de la récupération des réservations.');
         }
