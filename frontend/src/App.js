@@ -17,6 +17,7 @@ import Cancel from './pages/Cancel';
 import ArtistDetail from './components/ArtistDetail';
 import Home from './pages/Home';
 import ShowReviews from './pages/ShowReviews';
+import ArtistTroupe from './components/ArtistTroupe';
 
 function App() {
     const [hasItemsInCart, setHasItemsInCart] = useState(false);
@@ -134,7 +135,9 @@ function App() {
                             <Route path="/artists/:id" element={<ArtistDetail />} />
                             <Route path="/shows/reviews" element={<ShowReviews />} />
                             <Route path="/shows/:showId/reviews" element={<ShowReviews />} />
-
+                            {user?.is_staff && (
+                            <Route path="/artist-troupe" element={<ArtistTroupe />} />
+                            )}
                             {/* Autres routes */}
                             <Route path="/success" element={<Success />} />
                             <Route path="/cancel" element={<Cancel />} />
